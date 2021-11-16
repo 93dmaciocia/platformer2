@@ -1,0 +1,645 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>TiledCS</name>
+    </assembly>
+    <members>
+        <member name="T:TiledCS.TiledException">
+            <summary>
+            Represents an exception only thrown by TiledCS
+            </summary>
+        </member>
+        <member name="M:TiledCS.TiledException.#ctor(System.String)">
+            <summary>
+            Returns an instance of TiledException
+            </summary>
+            <param name="message">The exception message</param>
+        </member>
+        <member name="M:TiledCS.TiledException.#ctor(System.String,System.Exception)">
+            <summary>
+            Returns an instance of TiledException
+            </summary>
+            <param name="message">The exception message</param>
+            <param name="inner">The inner exception</param>
+        </member>
+        <member name="T:TiledCS.Extensions">
+            <summary>
+            Defines all extension methods used within TiledCS
+            </summary>
+        </member>
+        <member name="M:TiledCS.Extensions.AsIntArray(System.String)">
+            <summary>
+            Converts a comma separated string to an int array
+            </summary>
+            <param name="src">The comma separated string source</param>
+            <returns>The parsed int array</returns>
+        </member>
+        <member name="M:TiledCS.Extensions.AsIntArray(System.String[])">
+            <summary>
+            Converts a string array whose values are actually all numbers to an int array
+            </summary>
+            <param name="src">The string array</param>
+            <returns>The parsed int array</returns>
+        </member>
+        <member name="T:TiledCS.TiledMap">
+            <summary>
+            Represents a Tiled map
+            </summary>
+        </member>
+        <member name="F:TiledCS.TiledMap.SHIFT_FLIP_FLAG_TO_BYTE">
+            <summary>
+            How many times we shift the FLIPPED flags to the right in order to store it in a byte.
+            For example: 0b10100000000000000000000000000000 >> SHIFT_FLIP_FLAG_TO_BYTE = 0b00000101
+            </summary>
+        </member>
+        <member name="P:TiledCS.TiledMap.TiledVersion">
+            <summary>
+            Returns the Tiled version used to create this map
+            </summary>
+        </member>
+        <member name="P:TiledCS.TiledMap.Properties">
+            <summary>
+            Returns an array of properties defined in the map
+            </summary>
+        </member>
+        <member name="P:TiledCS.TiledMap.Tilesets">
+            <summary>
+            Returns an array of tileset definitions in the map
+            </summary>
+        </member>
+        <member name="P:TiledCS.TiledMap.Layers">
+            <summary>
+            Returns an array of layers or null if none were defined
+            </summary>
+        </member>
+        <member name="P:TiledCS.TiledMap.Groups">
+            <summary>
+            Returns an array of groups or null if none were defined
+            </summary>
+        </member>
+        <member name="P:TiledCS.TiledMap.Orientation">
+            <summary>
+            Returns the defined map orientation as a string
+            </summary>
+        </member>
+        <member name="P:TiledCS.TiledMap.RenderOrder">
+            <summary>
+            Returns the render order as a string
+            </summary>
+        </member>
+        <member name="P:TiledCS.TiledMap.Width">
+            <summary>
+            The amount of horizontal tiles
+            </summary>
+        </member>
+        <member name="P:TiledCS.TiledMap.Height">
+            <summary>
+            The amount of vertical tiles
+            </summary>
+        </member>
+        <member name="P:TiledCS.TiledMap.TileWidth">
+            <summary>
+            The tile width in pixels
+            </summary>
+        </member>
+        <member name="P:TiledCS.TiledMap.TileHeight">
+            <summary>
+            The tile height in pixels
+            </summary>
+        </member>
+        <member name="P:TiledCS.TiledMap.Infinite">
+            <summary>
+            Returns true if the map is configured as infinite
+            </summary>
+        </member>
+        <member name="P:TiledCS.TiledMap.BackgroundColor">
+            <summary>
+            Returns the defined map background color as a hex string
+            </summary>
+        </member>
+        <member name="M:TiledCS.TiledMap.#ctor">
+            <summary>
+            Returns an empty instance of TiledMap
+            </summary>
+        </member>
+        <member name="M:TiledCS.TiledMap.#ctor(System.String)">
+            <summary>
+            Loads a Tiled map in TMX format and parses it
+            </summary>
+            <param name="path">The path to the tmx file</param>
+            <exception cref="T:TiledCS.TiledException">Thrown when the map could not be loaded or is not in a correct format</exception>
+        </member>
+        <member name="M:TiledCS.TiledMap.ParseXml(System.String)">
+            <summary>
+            Can be used to parse the content of a TMX map manually instead of loading it using the constructor
+            </summary>
+            <param name="xml">The tmx file content as string</param>
+            <exception cref="T:TiledCS.TiledException"></exception>
+        </member>
+        <member name="M:TiledCS.TiledMap.GetTiledMapTileset(System.Int32)">
+            <summary>
+            Locates the right TiledMapTileset object for you within the Tilesets array
+            </summary>
+            <param name="gid">A value from the TiledLayer.data array</param>
+            <returns>An element within the Tilesets array or null if no match was found</returns>
+        </member>
+        <member name="M:TiledCS.TiledMap.GetTiledTilesets(System.String)">
+            <summary>
+            Loads external tilesets and matches them to firstGids from elements within the Tilesets array
+            </summary>
+            <param name="src">The folder where the TiledMap file is located</param>
+            <returns>A dictionary where the key represents the firstGid of the associated TiledMapTileset and the value the TiledTileset object</returns>
+        </member>
+        <member name="M:TiledCS.TiledMap.GetTiledTile(TiledCS.TiledMapTileset,TiledCS.TiledTileset,System.Int32)">
+            <summary>
+            Locates a specific TiledTile object
+            </summary>
+            <param name="mapTileset">An element within the Tilesets array</param>
+            <param name="tileset">An instance of the TiledTileset class</param>
+            <param name="gid">An element from within a TiledLayer.data array</param>
+            <returns>An entry of the TiledTileset.tiles array or null if none of the tile id's matches the gid</returns>
+            <remarks>Tip: Use the GetTiledMapTileset and GetTiledTilesets methods for retrieving the correct TiledMapTileset and TiledTileset objects</remarks>
+        </member>
+        <member name="M:TiledCS.TiledMap.GetSourceVector(TiledCS.TiledMapTileset,TiledCS.TiledTileset,System.Int32)">
+            <summary>
+            This method can be used to figure out the x and y position on a Tileset image for rendering tiles. 
+            </summary>
+            <param name="mapTileset">An element of the Tilesets array</param>
+            <param name="tileset">An instance of the TiledTileset class</param>
+            <param name="gid">An element within a TiledLayer.data array</param>
+            <returns>An int array of length 2 containing the x and y position of the source rect of the tileset image. Multiply the values by the tile width and height in pixels to get the actual x and y position. Returns null if the gid was not found</returns>
+            <remarks>This method currently doesn't take margin into account</remarks>
+        </member>
+        <member name="M:TiledCS.TiledMap.GetSourceRect(TiledCS.TiledMapTileset,TiledCS.TiledTileset,System.Int32)">
+            <summary>
+            This method can be used to figure out the source rect on a Tileset image for rendering tiles.
+            </summary>
+            <param name="mapTileset"></param>
+            <param name="tileset"></param>
+            <param name="gid"></param>
+            <returns>An instance of the class TiledSourceRect that represents a rectangle. Returns null if the provided gid was not found within the tileset.</returns>
+        </member>
+        <member name="M:TiledCS.TiledMap.IsTileFlippedHorizontal(TiledCS.TiledLayer,System.Int32,System.Int32)">
+            <summary>
+            Checks is a tile is flipped horizontally
+            </summary>
+            <param name="layer">An entry of the TiledMap.layers array</param>
+            <param name="tileHor">The tile's horizontal position</param>
+            <param name="tileVert">The tile's vertical position</param>
+            <returns>True if the tile was flipped horizontally or False if not</returns>
+        </member>
+        <member name="M:TiledCS.TiledMap.IsTileFlippedHorizontal(TiledCS.TiledLayer,System.Int32)">
+            <summary>
+            Checks is a tile is flipped horizontally
+            </summary>
+            <param name="layer">An entry of the TiledMap.layers array</param>
+            <param name="dataIndex">An index of the TiledLayer.data array</param>
+            <returns>True if the tile was flipped horizontally or False if not</returns>
+        </member>
+        <member name="M:TiledCS.TiledMap.IsTileFlippedVertical(TiledCS.TiledLayer,System.Int32,System.Int32)">
+            <summary>
+            Checks is a tile is flipped vertically
+            </summary>
+            <param name="layer">An entry of the TiledMap.layers array</param>
+            <param name="tileHor">The tile's horizontal position</param>
+            <param name="tileVert">The tile's vertical position</param>
+            <returns>True if the tile was flipped vertically or False if not</returns>
+        </member>
+        <member name="M:TiledCS.TiledMap.IsTileFlippedVertical(TiledCS.TiledLayer,System.Int32)">
+            <summary>
+            Checks is a tile is flipped vertically
+            </summary>
+            <param name="layer">An entry of the TiledMap.layers array</param>
+            <param name="dataIndex">An index of the TiledLayer.data array</param>
+            <returns>True if the tile was flipped vertically or False if not</returns>
+        </member>
+        <member name="M:TiledCS.TiledMap.IsTileFlippedDiagonal(TiledCS.TiledLayer,System.Int32,System.Int32)">
+            <summary>
+            Checks is a tile is flipped diagonally
+            </summary>
+            <param name="layer">An entry of the TiledMap.layers array</param>
+            <param name="tileHor">The tile's horizontal position</param>
+            <param name="tileVert">The tile's vertical position</param>
+            <returns>True if the tile was flipped diagonally or False if not</returns>
+        </member>
+        <member name="M:TiledCS.TiledMap.IsTileFlippedDiagonal(TiledCS.TiledLayer,System.Int32)">
+            <summary>
+            Checks is a tile is flipped diagonally
+            </summary>
+            <param name="layer">An entry of the TiledMap.layers array</param>
+            <param name="dataIndex">An index of the TiledLayer.data array</param>
+            <returns>True if the tile was flipped diagonally or False if not</returns>
+        </member>
+        <member name="T:TiledCS.TiledMapTileset">
+            <summary>
+            Represents an element within the Tilesets array of a TiledMap object
+            </summary>
+        </member>
+        <member name="F:TiledCS.TiledMapTileset.firstgid">
+            <summary>
+            The first gid defines which gid matches the tile with source vector 0,0. Is used to determine which tileset belongs to which gid
+            </summary>
+        </member>
+        <member name="F:TiledCS.TiledMapTileset.source">
+            <summary>
+            The tsx file path as defined in the map file itself
+            </summary>
+        </member>
+        <member name="T:TiledCS.TiledProperty">
+            <summary>
+            Represents a property object in both tilesets, maps, layers and objects. Values are all in string but you can use the 'type' property for conversions
+            </summary>
+        </member>
+        <member name="F:TiledCS.TiledProperty.name">
+            <summary>
+            The property name or key in string format
+            </summary>
+        </member>
+        <member name="F:TiledCS.TiledProperty.type">
+            <summary>
+            The property type as used in Tiled. Can be bool, number, string, ...
+            </summary>
+        </member>
+        <member name="F:TiledCS.TiledProperty.value">
+            <summary>
+            The value in string format
+            </summary>
+        </member>
+        <member name="T:TiledCS.TiledLayer">
+            <summary>
+            Represents a tile layer as well as an object layer within a tile map
+            </summary>
+        </member>
+        <member name="F:TiledCS.TiledLayer.id">
+            <summary>
+            The layer id
+            </summary>
+        </member>
+        <member name="F:TiledCS.TiledLayer.name">
+            <summary>
+            The layer name
+            </summary>
+        </member>
+        <member name="F:TiledCS.TiledLayer.width">
+            <summary>
+            Total horizontal tiles
+            </summary>
+        </member>
+        <member name="F:TiledCS.TiledLayer.height">
+            <summary>
+            Total vertical tiles
+            </summary>
+        </member>
+        <member name="F:TiledCS.TiledLayer.type">
+            <summary>
+            The layer type. Usually this is "objectgroup" or "tilelayer".
+            </summary>
+        </member>
+        <member name="F:TiledCS.TiledLayer.tintcolor">
+            <summary>
+            The tint color set by the user in hex code
+            </summary>
+        </member>
+        <member name="F:TiledCS.TiledLayer.visible">
+            <summary>
+            Defines if the layer is visible in the editor
+            </summary>
+        </member>
+        <member name="F:TiledCS.TiledLayer.locked">
+            <summary>
+            Is true when the layer is locked
+            </summary>
+        </member>
+        <member name="F:TiledCS.TiledLayer.offsetX">
+            <summary>
+            The horizontal offset
+            </summary>
+        </member>
+        <member name="F:TiledCS.TiledLayer.offsetY">
+            <summary>
+            The vertical offset
+            </summary>
+        </member>
+        <member name="F:TiledCS.TiledLayer.data">
+            <summary>
+            An int array of gid numbers which define which tile is being used where. The length of the array equals the layer width * the layer height. Is null when the layer is not a tilelayer.
+            </summary>
+        </member>
+        <member name="F:TiledCS.TiledLayer.dataRotationFlags">
+            <summary>
+            A parallel array to data which stores the rotation flags of the tile.
+            Bit 3 is horizontal flip,
+            bit 2 is vertical flip, and
+            bit 1 is (anti) diagonal flip.
+            Is null when the layer is not a tilelayer.
+            </summary>
+        </member>
+        <member name="F:TiledCS.TiledLayer.objects">
+            <summary>
+            The list of objects in case of an objectgroup layer. Is null when the layer has no objects.
+            </summary>
+        </member>
+        <member name="F:TiledCS.TiledLayer.properties">
+            <summary>
+            The layer properties if set
+            </summary>
+        </member>
+        <member name="T:TiledCS.TiledObject">
+            <summary>
+            Represents an tiled object defined in object layers
+            </summary>
+        </member>
+        <member name="F:TiledCS.TiledObject.id">
+            <summary>
+            The object id
+            </summary>
+        </member>
+        <member name="F:TiledCS.TiledObject.name">
+            <summary>
+            The object's name
+            </summary>
+        </member>
+        <member name="F:TiledCS.TiledObject.type">
+            <summary>
+            The object type if defined. Null if none was set.
+            </summary>
+        </member>
+        <member name="F:TiledCS.TiledObject.x">
+            <summary>
+            The object's x position in pixels
+            </summary>
+        </member>
+        <member name="F:TiledCS.TiledObject.y">
+            <summary>
+            The object's y position in pixels
+            </summary>
+        </member>
+        <member name="F:TiledCS.TiledObject.rotation">
+            <summary>
+            The object's rotation
+            </summary>
+        </member>
+        <member name="F:TiledCS.TiledObject.width">
+            <summary>
+            The object's width in pixels
+            </summary>
+        </member>
+        <member name="F:TiledCS.TiledObject.height">
+            <summary>
+            The object's height in pixels
+            </summary>
+        </member>
+        <member name="F:TiledCS.TiledObject.gid">
+            <summary>
+            The tileset gid when the object is linked to a tile
+            </summary>
+        </member>
+        <member name="F:TiledCS.TiledObject.properties">
+            <summary>
+            An array of properties. Is null if none were defined.
+            </summary>
+        </member>
+        <member name="T:TiledCS.TiledTile">
+            <summary>
+            Represents a tile within a tileset
+            </summary>
+            <remarks>These are not defined for all tiles within a tileset, only the ones with properties, terrains and animations.</remarks>
+        </member>
+        <member name="F:TiledCS.TiledTile.id">
+            <summary>
+            The tile id
+            </summary>
+        </member>
+        <member name="F:TiledCS.TiledTile.type">
+            <summary>
+            The custom tile type, set by the user
+            </summary>
+        </member>
+        <member name="F:TiledCS.TiledTile.terrain">
+            <summary>
+            The terrain definitions as int array. These are indices indicating what part of a terrain and which terrain this tile represents.
+            </summary>
+            <remarks>In the map file empty space is used to indicate null or no value. However, since it is an int array I needed something so I decided to replace empty values with -1.</remarks>
+        </member>
+        <member name="F:TiledCS.TiledTile.properties">
+            <summary>
+            An array of properties. Is null if none were defined.
+            </summary>
+        </member>
+        <member name="F:TiledCS.TiledTile.animation">
+            <summary>
+            An array of tile animations. Is null if none were defined. 
+            </summary>
+        </member>
+        <member name="F:TiledCS.TiledTile.image">
+            <summary>
+            The individual tile image
+            </summary>
+        </member>
+        <member name="T:TiledCS.TiledImage">
+            <summary>
+            Represents an image
+            </summary>
+        </member>
+        <member name="F:TiledCS.TiledImage.width">
+            <summary>
+            The image width
+            </summary>
+        </member>
+        <member name="F:TiledCS.TiledImage.height">
+            <summary>
+            The image height
+            </summary>
+        </member>
+        <member name="F:TiledCS.TiledImage.source">
+            <summary>
+            The image source path
+            </summary>
+        </member>
+        <member name="T:TiledCS.TiledTileAnimation">
+            <summary>
+            Represents a tile animation. Tile animations are a group of tiles which act as frames for an animation.
+            </summary>
+        </member>
+        <member name="F:TiledCS.TiledTileAnimation.tileid">
+            <summary>
+            The tile id within a tileset
+            </summary>
+        </member>
+        <member name="F:TiledCS.TiledTileAnimation.duration">
+            <summary>
+            The duration in miliseconds
+            </summary>
+        </member>
+        <member name="T:TiledCS.TiledTerrain">
+            <summary>
+            Represents a terrain definition.
+            </summary>
+        </member>
+        <member name="F:TiledCS.TiledTerrain.name">
+            <summary>
+            The terrain name
+            </summary>
+        </member>
+        <member name="F:TiledCS.TiledTerrain.tile">
+            <summary>
+            The tile used as icon for the terrain editor
+            </summary>
+        </member>
+        <member name="T:TiledCS.TiledSourceRect">
+            <summary>
+            Used as data type for the GetSourceRect method. Represents basically a rectangle.
+            </summary>
+        </member>
+        <member name="F:TiledCS.TiledSourceRect.x">
+            <summary>
+            The x position in pixels from the tile location in the source image
+            </summary>
+        </member>
+        <member name="F:TiledCS.TiledSourceRect.y">
+            <summary>
+            The y position in pixels from the tile location in the source image
+            </summary>
+        </member>
+        <member name="F:TiledCS.TiledSourceRect.width">
+            <summary>
+            The width in pixels from the tile in the source image
+            </summary>
+        </member>
+        <member name="F:TiledCS.TiledSourceRect.height">
+            <summary>
+            The height in pixels from the tile in the source image
+            </summary>
+        </member>
+        <member name="T:TiledCS.TiledGroup">
+            <summary>
+            Represents a layer or object group
+            </summary>
+        </member>
+        <member name="F:TiledCS.TiledGroup.id">
+            <summary>
+            The group's id
+            </summary>
+        </member>
+        <member name="F:TiledCS.TiledGroup.name">
+            <summary>
+            The group's name
+            </summary>
+        </member>
+        <member name="F:TiledCS.TiledGroup.visible">
+            <summary>
+            The group's visibility
+            </summary>
+        </member>
+        <member name="F:TiledCS.TiledGroup.locked">
+            <summary>
+            The group's locked state
+            </summary>
+        </member>
+        <member name="F:TiledCS.TiledGroup.properties">
+            <summary>
+            The group's user properties
+            </summary>
+        </member>
+        <member name="F:TiledCS.TiledGroup.layers">
+            <summary>
+            The group's layers
+            </summary>
+        </member>
+        <member name="F:TiledCS.TiledGroup.objects">
+            <summary>
+            The group's objects
+            </summary>
+        </member>
+        <member name="F:TiledCS.TiledGroup.groups">
+            <summary>
+            The group's subgroups
+            </summary>
+        </member>
+        <member name="T:TiledCS.TiledTileset">
+            <summary>
+            Represents a Tiled tileset
+            </summary>
+        </member>
+        <member name="P:TiledCS.TiledTileset.TiledVersion">
+            <summary>
+            The Tiled version used to create this tileset
+            </summary>
+        </member>
+        <member name="P:TiledCS.TiledTileset.Name">
+            <summary>
+            The tileset name
+            </summary>
+        </member>
+        <member name="P:TiledCS.TiledTileset.TileWidth">
+            <summary>
+            The tile width in pixels
+            </summary>
+        </member>
+        <member name="P:TiledCS.TiledTileset.TileHeight">
+            <summary>
+            The tile height in pixels
+            </summary>
+        </member>
+        <member name="P:TiledCS.TiledTileset.TileCount">
+            <summary>
+            The total amount of tiles
+            </summary>
+        </member>
+        <member name="P:TiledCS.TiledTileset.Columns">
+            <summary>
+            The amount of horizontal tiles
+            </summary>
+        </member>
+        <member name="P:TiledCS.TiledTileset.Image">
+            <summary>
+            The image definition used by the tileset
+            </summary>
+        </member>
+        <member name="P:TiledCS.TiledTileset.Spacing">
+            <summary>
+            The amount of spacing between the tiles in pixels
+            </summary>
+        </member>
+        <member name="P:TiledCS.TiledTileset.Margin">
+            <summary>
+            The amount of margin between the tiles in pixels
+            </summary>
+        </member>
+        <member name="P:TiledCS.TiledTileset.Tiles">
+            <summary>
+            An array of tile definitions
+            </summary>
+            <remarks>Not all tiles within a tileset have definitions. Only those with properties, animations, terrains, ...</remarks>
+        </member>
+        <member name="P:TiledCS.TiledTileset.Terrains">
+            <summary>
+            An array of terrain definitions
+            </summary>
+        </member>
+        <member name="P:TiledCS.TiledTileset.Properties">
+            <summary>
+            An array of tileset properties
+            </summary>
+        </member>
+        <member name="M:TiledCS.TiledTileset.#ctor">
+            <summary>
+            Returns an empty instance of TiledTileset
+            </summary>
+        </member>
+        <member name="M:TiledCS.TiledTileset.#ctor(System.String)">
+            <summary>
+            Loads a tileset in TSX format and parses it
+            </summary>
+            <param name="path">The file path of the TSX file</param>
+            <exception cref="T:TiledCS.TiledException">Thrown when the file could not be found or parsed</exception>
+        </member>
+        <member name="M:TiledCS.TiledTileset.ParseXml(System.String)">
+            <summary>
+            Can be used to parse the content of a TSX tileset manually instead of loading it using the constructor
+            </summary>
+            <param name="xml">The tmx file content as string</param>
+            <exception cref="T:TiledCS.TiledException"></exception>
+        </member>
+    </members>
+</doc>
